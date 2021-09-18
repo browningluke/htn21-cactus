@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import Button from 'react-bootstrap/Button'
-import VoiceInput from './VoiceInput.js'
 
 const Prompt = styled.h1`
     text-align: center;
@@ -18,7 +17,6 @@ function Home() {
             <Prompt>Welcome to Seed</Prompt>
             <Seed></Seed>
             <Button>Login</Button>
-            <VoiceInput></VoiceInput>
         </div>
     )
 }
