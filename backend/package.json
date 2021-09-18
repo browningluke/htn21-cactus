@@ -1,0 +1,30 @@
+{
+  "name": "htn-cactus-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "tsc": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/express-session": "^1.17.4",
+    "@types/node": "^16.9.2",
+    "@types/passport": "^1.0.7",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "@oauth-everything/passport-discord": "^1.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "firebase": "^9.0.2",
+    "passport": "^0.4.1"
+  }
+}
