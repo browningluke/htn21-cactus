@@ -6,7 +6,8 @@ import { Profile, Scope, Strategy, VerifyCallback } from '@oauth-everything/pass
 import FirestoreDb from "./firestore";
 import dotenv from 'dotenv';
 
-import { User } from "catcus";
+import { RecursivePartial, User } from "cactus";
+import { GenericResponse, GetUser } from "cactus-response";
 
 dotenv.config()
 const db = new FirestoreDb();
@@ -59,37 +60,107 @@ app.use(session({ secret: "asdfg" }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors())
+app.use(express.json());
+
+/*
+    Auth Endpoints
+ */
 
 // Connect passport to express/connect/etc
 app.get("/auth/discord", passport.authenticate("discord"));
 app.get("/auth/discord/callback", passport.authenticate("discord", {
     failureRedirect: "/failed",
-    successRedirect: "/info"
+    successRedirect: "/" // todo change this
 }));
 
-app.get('/info', checkAuth, function(req, res) {
-    res.json(req.user);
+app.get('/auth/logout', (req, res) => {
+    req.logout();
+    console.log("Logged out")
+    res.redirect('/');
 });
 
-app.get('/failed', function(req, res) {
+/*
+    Misc Endpoints
+ */
+
+app.get('/failed', (req, res) => {
     res.send('Failed to login!')
 });
 
-app.get('/logout', function(req, res) {
-    req.logout();
-    res.send("Logged out");
+app.get('/info', checkAuth, (req, res) => {
+    res.json(req.user);
 });
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
+/*
+    User Endpoints
+ */
+
+app.get('/api/user', checkAuth, (req, res) => {
+    const user = req.user;
+    const resJson: GetUser = { user: user }
+    res.json(resJson);
+})
+
+/*
+    Expects data in format:
+    {
+        id?
+        name?
+        currentPlant?: {
+            dateTimeCreated?
+            spokenPhrases? (plz call with (user.currentPlant.spokenPhrases + new phrase element) otherwise it'll overwrite)
+            growth?
+        }
+        garden? (plz call with (user.garden + new garden element) otherwise it'll overwrite)
+    }
+ */
+app.patch('/api/user', checkAuth, async (req, res) => {
+    const user = req.user as User;
+    const reqBody = req.body;
+
+    const newUser: RecursivePartial<User> = {
+        currentPlant: {
+            spokenPhrases: reqBody.currentPlant.spokenPhrases,
+            growth: reqBody.currentPlant.growth,
+        },
+        garden: reqBody.garden
+    }
+
+    try {
+        await db.updateUser(user.id, newUser);
+        res.json(newUser);
+        return;
+    } catch (e) {
+        console.log(e);
+        if (e instanceof Error) {
+            const errJson: GenericResponse = {
+                error: e.message
+            }
+            res.status(500).json(errJson);
+        }
+    }
+})
+
+/*
+    Speech-to-text endpoints
+ */
+
+// Nothing as of yet
+
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
+    console.log(`App listening at http://localhost:${port}`)
 })
 
 
 function checkAuth(req: any, res: any, next: any) {
     if (req.isAuthenticated()) return next();
-    res.send('not logged in :(');
+
+    const unAuthJson: GenericResponse = {
+        error: "Unauthorized. User is not logged in :("
+    }
+    res.status(401).json(unAuthJson);
 }

@@ -1,8 +1,8 @@
 import { initializeApp } from "firebase/app"
-import { getFirestore, collection, doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { getFirestore, collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import dot from "dot-object";
 
-import { User } from "catcus";
-
+import { RecursivePartial, User } from "cactus";
 
 // Set the configuration for your app
 const firebaseConfig = require('../firebase.config.json');
@@ -11,9 +11,10 @@ export default class FirestoreDb {
 
     firebaseApp = initializeApp(firebaseConfig);
     db = getFirestore();
+    userRef = collection(this.db, "users");
 
     async findUserById(id: string): Promise<User | null> {
-        const docRef = doc(this.db, "users", id);
+        const docRef = doc(this.userRef, id);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -29,7 +30,6 @@ export default class FirestoreDb {
 
     async findOrCreate(id: string, discordUsername: string): Promise<User> {
         const foundUser = await this.findUserById(id);
-
         if (foundUser) return foundUser;
 
         console.log("Not found user, creating new user.");
@@ -45,11 +45,27 @@ export default class FirestoreDb {
             garden: []
         }
 
-        const usersRef = collection(this.db, "users");
-        await setDoc(doc(usersRef, id), user);
+        await setDoc(doc(this.userRef, id), user);
         console.log("Document written with ID: ",  id);
 
         return user;
+    }
+
+    async updateUser(id: string, user: RecursivePartial<User>) {
+        // const foundUser = await this.findUserById(id);
+        // if (!foundUser) throw new Error("No user in the database!");
+
+        let tgt = {};
+        dot.keepArray = true;
+        dot.dot(user, tgt);
+
+        // @ts-ignore
+        Object.keys(tgt).forEach(key => tgt[key] === undefined ? delete tgt[key] : {});
+        console.log(tgt);
+
+        // Assume user already exists in db.
+        await updateDoc(doc(this.userRef, id), tgt);
+        console.log("Document updated with ID: ", id);
     }
 
 }
