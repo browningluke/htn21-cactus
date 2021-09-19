@@ -10,6 +10,7 @@ import Settings from '../Assets/Settings.png';
 import VoiceInput from './VoiceInput.js';
 import GrowthPoints from './GrowthPoints';
 import axios from 'axios';
+import Message from './Message.js';
 
 const WelcomeContainer = styled.div`
 	display: flex;
@@ -19,8 +20,8 @@ const WelcomeContainer = styled.div`
 `;
 
 const TitleContainer = styled.div`
-	padding-top: 217px;
-	padding-bottom: 20px;
+	padding-top: 90px;
+	padding-bottom: 70px;
 `;
 
 const WelcomeTitle = styled.h1`
@@ -42,6 +43,7 @@ const SideButton = styled.img`
 	width: 54px;
 	height: 54px;
 	margin: 10px;
+	cursor: pointer;
 `;
 
 const BottomBar = styled.div`
@@ -68,9 +70,15 @@ const LoginButton = styled.img`
 	height: 60px;
 `;
 
+const PlantContainer = styled.div`
+	display: flex;
+	flex-direction: row;
+`;
+
 function Welcome() {
 	const [display, setDisplay] = useState(false);
 	const [userLoggedIn, setUserLoggedIn] = useState(false);
+	const [dumbCactus, setDumbCactus] = useState(false);
 	const [userInfo, setUserInfo] = useState({});
 	const [userTextBubble, setUserTextBubble] = useState(false);
 	const [growthPoints, refreshGrowthPoints] = useState(0);
@@ -85,7 +93,17 @@ function Welcome() {
 			.catch((error) => {
 				console.log(error);
 			});
-	}, []);
+		// axios post to patch user's current plant's growth points
+		axios
+			.patch('http://localhost:8080/api/user', {currentPlant: {growth: growthPoints}}, {withCredentials: true})
+			.then((res) => {
+				console.log("updated score to: " + growthPoints);
+				console.log(res.data);
+			})
+			.catch((error) => {
+				console.log(error);
+			})
+	}, [growthPoints]);
 
 	return (
 		<WelcomeContainer>
@@ -106,29 +124,44 @@ function Welcome() {
 				/>
 			</SideBarContainer>
 			<TopBar>
-				<GrowthPoints growthPoints={growthPoints}/>
+				<GrowthPoints growthPoints={growthPoints} />
 			</TopBar>
 			<TitleContainer>
+				{!userLoggedIn && (
+					<Alert variant={'info'}>
+						Please login to Discord to keep track of your dumb cactus' growth!
+					</Alert>
+				)}
+                {display && (
+                    <div>
+                        Grow your plant by clicking "Try Me!" and saying positive affirmations
+                        like "You are not a dumb cactus!"
+                    </div>
+                )}
 				<WelcomeTitle>Welcome to CactUs!</WelcomeTitle>
 			</TitleContainer>
-			<Plant />
+			<PlantContainer>
+				<Plant score={growthPoints} dumbCactus={dumbCactus}/>
+				<Message />
+			</PlantContainer>
 			<BottomBar>
-				{!userLoggedIn ? 
-				<a href='http://localhost:8080/auth/discord'> <LoginButton src={Login} /></a> 
-				: <Alert variant={'warning'}>Hello {userInfo.name}!</Alert>}
-				<VoiceInput 
-					growthPoints={growthPoints} 
+				{!userLoggedIn ? (
+					<a href='http://localhost:8080/auth/discord'>
+						{' '}
+						<LoginButton src={Login} />
+					</a>
+				) : (
+					<Alert variant={'warning'}>Hello {userInfo.name}!</Alert>
+				)}
+				<VoiceInput
+					growthPoints={growthPoints}
 					refreshGrowthPoints={refreshGrowthPoints}
 					setUserTextBubble={setUserTextBubble}
 					userLoggedIn={userLoggedIn}
-					setUserLoggedIn={setUserLoggedIn}></VoiceInput>
+					setUserLoggedIn={setUserLoggedIn}
+					setDumbCactus={setDumbCactus}
+				></VoiceInput>
 			</BottomBar>
-			{display && (
-				<div>
-					Grow your plant by clicking "Try Me!" and saying positive affirmations
-					like "You are not a dumb cactus!"
-				</div>
-			)}
 		</WelcomeContainer>
 	);
 }

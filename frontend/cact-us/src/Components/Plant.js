@@ -4,6 +4,7 @@ import Seed from '../Assets/Seed.png';
 import Cactus1 from '../Assets/Cactus1.png';
 import Cactus2 from '../Assets/Cactus2.png';
 import Cactus3 from '../Assets/Cactus3.png';
+import DumbCactus from '../Assets/DumbCactus.png';
 
 const PlantImg = styled.img`
 	width: 152px;
@@ -11,8 +12,8 @@ const PlantImg = styled.img`
 	margin-top: 50px;
 `;
 
-const Plant = () => {
-	const score = 75;
+const Plant = ({score, dumbCactus}) => {
+	if (dumbCactus) return <PlantImg src={DumbCactus} />;
 	if (score < 25) {
 		return <PlantImg src={Seed} />;
 	} else if (score >= 25 && score < 50) {
