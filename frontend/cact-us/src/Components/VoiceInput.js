@@ -39,6 +39,7 @@ const RecordView = () => {
 		width: 158px;
 		height: 52px;
 		vertical-align: baseline;
+		cursor: pointer;
 	`;
 
 	return (
