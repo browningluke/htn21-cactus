@@ -94,7 +94,7 @@ function Welcome() {
 			</TitleContainer>
 			<Seed src={seed} />
 			<BottomBar>
-				<a href='localhost:8080/auth/discord'>
+				<a href='http://localhost:8080/auth/discord'>
 					<LoginButton src={Login} />
 				</a>
 				<Button onClick={tryAudio}>
