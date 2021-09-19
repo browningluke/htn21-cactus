@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
 import styled from 'styled-components';
 import seed from '../Assets/Seed.png';
 import Login from '../Assets/Login.png';
 import Connect from '../Assets/Connect.png';
 import Help from '../Assets/Help.png';
 import Map from '../Assets/Map.png';
-import TryMe from '../Assets/TryMe.png';
 import Settings from '../Assets/Settings.png';
+import VoiceInput from './VoiceInput.js';
 
 const WelcomeContainer = styled.div`
 	display: flex;
@@ -63,16 +62,7 @@ const LoginButton = styled.img`
 	height: 60px;
 `;
 
-const TryButton = styled.img`
-	width: 158px;
-	height: 52px;
-`;
-
 function Welcome() {
-	const [tryMe, setTryMe] = useState(false);
-	const tryAudio = () => {
-		setTryMe(true);
-	};
 	return (
 		<WelcomeContainer>
 			<SideBarContainer>
@@ -97,9 +87,8 @@ function Welcome() {
 				<a href='http://localhost:8080/auth/discord'>
 					<LoginButton src={Login} />
 				</a>
-				<Button onClick={tryAudio}>
-					<TryButton src={TryMe} />
-				</Button>
+				<VoiceInput>
+				</VoiceInput>
 			</BottomBar>
 		</WelcomeContainer>
 	);

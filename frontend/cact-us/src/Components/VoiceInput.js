@@ -1,7 +1,9 @@
 import { useReactMediaRecorder } from "react-media-recorder";
-import Button from 'react-bootstrap/Button';
 import React, { useState } from 'react';
+import Button from 'react-bootstrap/button';
+import styled from 'styled-components';
 import axios from 'axios';
+import TryMe from '../Assets/TryMe.png';
 
 const RecordView = () => {
     const [isLoading, setLoading] = useState(false);
@@ -33,9 +35,16 @@ const RecordView = () => {
       }
     });
 
+    const TryButton = styled.img`
+	    width: 158px;
+	    height: 52px;
+    `;
+
   return (
     <div>
-      {status === "recording" ? <Button variant="primary" disabled={isLoading} onClick={!isLoading?stopRecording:null}>Send</Button> : <Button onClick={startRecording}>Record</Button>}
+      {status === "recording" ? 
+        <Button src={TryMe} disabled={isLoading} onClick={!isLoading?stopRecording:null}>Stop Recording</Button>
+        : <TryButton src={TryMe} onClick={startRecording}/>}
       {mediaBlobUrl != null && <audio src={mediaBlobUrl} controls/>}
     </div>
   );
