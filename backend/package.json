@@ -24,6 +24,7 @@
     "typescript": "^4.4.3"
   },
   "dependencies": {
+    "@google-cloud/language": "^4.3.1",
     "@google-cloud/speech": "^4.8.1",
     "@oauth-everything/passport-discord": "^1.0.2",
     "concat-stream": "^2.0.0",

@@ -38,4 +38,9 @@ declare module 'cactus-response' {
         user: User;
     }
 
+    export interface SpeechResp extends GenericResponse {
+        text: string;
+        score: number;
+    }
+
 }
