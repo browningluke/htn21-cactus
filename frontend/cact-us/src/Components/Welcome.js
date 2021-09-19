@@ -91,14 +91,16 @@ function Welcome() {
 	const [dumbCactus, setDumbCactus] = useState(false);
 	const [userInfo, setUserInfo] = useState({});
 	const [userTextBubble, setUserTextBubble] = useState("");
-	const [growthPoints, refreshGrowthPoints] = useState(0);
+	const [growthPoints, refreshGrowthPoints] = useState();
 
 	useEffect(() => {
+		// fetch user data
 		axios.get('http://localhost:8080/api/user', {withCredentials: true})
 			.then((res) => {
 				console.log(res.data);
 				setUserLoggedIn(true);
 				setUserInfo(res.data.user);
+				refreshGrowthPoints(res.data.user.currentPlant.growth);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -138,7 +140,7 @@ function Welcome() {
 			</TopBar>
 			<TitleContainer>
 				{!userLoggedIn && (
-					<Alert variant={'info'}>
+					<Alert style={{width: '550px'}} variant={'info'}>
 						Please login to Discord to keep track of your dumb cactus' growth!
 					</Alert>
 				)}

@@ -5,6 +5,7 @@ import axios from 'axios';
 import TryMe from '../Assets/TryMe.png';
 import StopRecording from '../Assets/StopRecording.png';
 import TalktoMe from '../Assets/TalktoMe.png';
+import Spinner from 'react-bootstrap/Spinner'
 
 const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userLoggedIn, setUserLoggedIn, setDumbCactus}) => {
 	const [isLoading, setLoading] = useState(false);
@@ -32,11 +33,18 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 					.post('http://localhost:8080/api/speech-new', formData, {withCredentials: true})
 					.then((res) => {
 						console.log(res.data);
-                        if (res.data.text.includes("dumb cactus")) {setDumbCactus(true)};
+                        if (res.data.text.includes("dumb cactus")) {
+                            setDumbCactus(true)
+                            setTimeout(() => {
+                                setUserTextBubble("");
+                                setDumbCactus(false);
+                            }, 15000);
+                        };
                         setUserTextBubble(res.data.text);
+                        setLoading(false);
                         setTimeout(() => {
                             setUserTextBubble("");
-                        }, 5000);
+                        }, 15000);
                         console.log("score increment from newest audio file: ");
                         console.log(res.data.score*Math.floor(audiofile.size/5000));
                         console.log("expected new score: ");
@@ -47,7 +55,6 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 						console.log(error);
                         setUserTextBubble("We are having audio issues! Sorry :(");
 					});
-				setLoading(false);
 			},
 		});
 
@@ -69,8 +76,9 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 					onClick={!isLoading ? stopRecording : null}
 				>
 				</TryButton>
-			) : (
-				<TryButton style={{display: 'inline-block', marginLeft: '50px'}} src={hasTried ? TalktoMe : TryMe} onClick={startRecording} />
+			) : (isLoading ? 
+				<Spinner style={{marginLeft: "100px"}} animation="border" variant="success" />
+                : <TryButton style={{display: 'inline-block', marginLeft: '50px'}} src={hasTried ? TalktoMe : TryMe} onClick={startRecording} />
 			)}
 		</div>
 	);

@@ -15,6 +15,7 @@ const Message = () => {
 	return (
 		<MessageBox>
 			<TextLoop
+				interval={10000}
 				children={[
 					'I am feeling a little dry!!',
 					'Need some sunshine here!',
