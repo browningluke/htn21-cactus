@@ -5,24 +5,18 @@ import session from "express-session";
 import { Profile, Scope, Strategy, VerifyCallback } from '@oauth-everything/passport-discord';
 import busboy from "connect-busboy";
 
-import speech from "@google-cloud/speech";
-import language from "@google-cloud/language";
-
 import dotenv from 'dotenv';
 import concat from "concat-stream";
-import ffmpeg from "fluent-ffmpeg";
 
 import { RecursivePartial, User } from "cactus";
 import { GenericResponse, GetUser, SpeechResp } from "cactus-response";
-import FirestoreDb from "./firestore";
 
-import * as Buffer from "buffer";
-import { Readable } from "stream";
+import FirestoreDb from "./firestore";
+import GoogleAPI from "./googleapi";
 
 dotenv.config()
 const db = new FirestoreDb();
-// const speechClient = new speech.SpeechClient();
-// const languageClient = new language.LanguageServiceClient();
+const gapi = new GoogleAPI();
 
 passport.serializeUser(function(user, done) {
     // Saving user
@@ -175,29 +169,6 @@ app.post('/api/speech', async (req, res) => {
         {text: "I hate you cactus.", score: -1}];
     const item = items[Math.floor(Math.random()*items.length)];
 
-    // // Detects the sentiment of the text
-    // const [result] = await languageClient.analyzeSentiment({document: {
-    //     content: item,
-    //     type: "PLAIN_TEXT"
-    // }});
-    // const sentiment = result.documentSentiment;
-    // const score =  sentiment?.score!
-    // const magnitude = sentiment?.magnitude!;
-    //
-    // let scoreVal: number;
-    //
-    // // -0.2 <= x <= 0.2
-    // if (magnitude <= 0.35) {
-    //     console.log(`It's neutral`);
-    //     scoreVal = 0;
-    // } else if (score <= 0) {
-    //     console.log(`It's negative`);
-    //     scoreVal = -1;
-    // } else {
-    //     console.log(`It's positive`);
-    //     scoreVal = 1;
-    // }
-
     const respJson: SpeechResp = {
         text: item.text,
         score: item.score // scoreVal
@@ -206,6 +177,25 @@ app.post('/api/speech', async (req, res) => {
     res.json(respJson);
 });
 
+
+app.post('/api/speech-new', ((req, res) => {
+    let fstream = concat(concatCallback);
+    req.pipe(req.busboy);
+    req.busboy.on('file', function (fieldname, file, filename) {
+        console.log("Uploading: " + filename);
+
+        file.pipe(fstream);
+        fstream.on('close', function () {
+            console.log("Upload Finished of " + filename);
+            //res.sendStatus(200);
+        });
+    });
+
+    async function concatCallback(buffer: Buffer) {
+        const json = await gapi.handleSpeechAnalysis(buffer);
+        res.json(json);
+    }
+}));
 
 // app.post('/api/speech-prod', (req, res) => {
 //     let fstream = concat(convert);
