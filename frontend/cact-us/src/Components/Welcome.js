@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Alert from 'react-bootstrap/alert';
 import styled from 'styled-components';
 import Plant from './Plant.js';
 import Login from '../Assets/Login.png';
@@ -7,6 +8,8 @@ import Help from '../Assets/Help.png';
 import Map from '../Assets/Map.png';
 import Settings from '../Assets/Settings.png';
 import VoiceInput from './VoiceInput.js';
+import GrowthPoints from './GrowthPoints';
+import axios from 'axios';
 
 const WelcomeContainer = styled.div`
 	display: flex;
@@ -47,6 +50,13 @@ const BottomBar = styled.div`
 	padding: 20px;
 `;
 
+const TopBar = styled.div`
+	display: flex;
+	flex-direction: row;
+	padding: 20px;
+	justify-content: right;
+`;
+
 const Button = styled.button`
 	border: none;
 	cursor: pointer;
@@ -60,6 +70,23 @@ const LoginButton = styled.img`
 
 function Welcome() {
 	const [display, setDisplay] = useState(false);
+	const [userLoggedIn, setUserLoggedIn] = useState(false);
+	const [userInfo, setUserInfo] = useState({});
+	const [userTextBubble, setUserTextBubble] = useState(false);
+	const [growthPoints, refreshGrowthPoints] = useState(0);
+
+	useEffect(() => {
+		axios.get('http://localhost:8080/api/user', {withCredentials: true})
+			.then((res) => {
+				console.log(res.data);
+				setUserLoggedIn(true);
+				setUserInfo(res.data.user);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	}, []);
+
 	return (
 		<WelcomeContainer>
 			<SideBarContainer>
@@ -78,20 +105,28 @@ function Welcome() {
 					onMouseLeave={() => setDisplay(false)}
 				/>
 			</SideBarContainer>
+			<TopBar>
+				<GrowthPoints growthPoints={growthPoints}/>
+			</TopBar>
 			<TitleContainer>
 				<WelcomeTitle>Welcome to Cact-Us!</WelcomeTitle>
 			</TitleContainer>
 			<Plant />
 			<BottomBar>
-				<a href='http://localhost:8080/auth/discord'>
-					<LoginButton src={Login} />
-				</a>
-				<VoiceInput></VoiceInput>
+				{!userLoggedIn ? 
+				<a href='http://localhost:8080/auth/discord'> <LoginButton src={Login} /></a> 
+				: <Alert variant={'warning'}>Hello {userInfo.name}!</Alert>}
+				<VoiceInput 
+					growthPoints={growthPoints} 
+					refreshGrowthPoints={refreshGrowthPoints}
+					setUserTextBubble={setUserTextBubble}
+					userLoggedIn={userLoggedIn}
+					setUserLoggedIn={setUserLoggedIn}></VoiceInput>
 			</BottomBar>
 			{display && (
 				<div>
 					Grow your plant by clicking "Try Me!" and saying positive affirmations
-					like "I am grateful all that I have!"
+					like "You are not a dumb cactus!"
 				</div>
 			)}
 		</WelcomeContainer>
