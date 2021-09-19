@@ -87,8 +87,7 @@ function Welcome() {
 				<a href='http://localhost:8080/auth/discord'>
 					<LoginButton src={Login} />
 				</a>
-				<VoiceInput>
-				</VoiceInput>
+				<VoiceInput></VoiceInput>
 			</BottomBar>
 		</WelcomeContainer>
 	);
