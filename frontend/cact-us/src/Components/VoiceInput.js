@@ -29,11 +29,14 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 
                 // axios post to retrieve speech-to-text response
 				axios
-					.post('http://localhost:8080/api/speech', formData, {withCredentials: true})
+					.post('http://localhost:8080/api/speech-new', formData, {withCredentials: true})
 					.then((res) => {
 						console.log(res.data);
                         if (res.data.text.includes("dumb cactus")) {setDumbCactus(true)};
                         setUserTextBubble(res.data.text);
+                        setTimeout(() => {
+                            setUserTextBubble("");
+                        }, 5000);
                         console.log("score increment from newest audio file: ");
                         console.log(res.data.score*Math.floor(audiofile.size/5000));
                         console.log("expected new score: ");
@@ -42,6 +45,7 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 					})
 					.catch((error) => {
 						console.log(error);
+                        setUserTextBubble("We are having audio issues! Sorry :(");
 					});
 				setLoading(false);
 			},

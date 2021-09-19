@@ -76,12 +76,21 @@ const PlantContainer = styled.div`
 	flex-direction: row;
 `;
 
+const UserTextBubble = styled.div`
+	width: auto;
+	min-width: 200px;
+	height: 70px;
+	background-color: #E1EECB;
+	padding: 20px;
+	border-radius: 10px;
+`;
+
 function Welcome() {
 	const [display, setDisplay] = useState(false);
 	const [userLoggedIn, setUserLoggedIn] = useState(false);
 	const [dumbCactus, setDumbCactus] = useState(false);
 	const [userInfo, setUserInfo] = useState({});
-	const [userTextBubble, setUserTextBubble] = useState(false);
+	const [userTextBubble, setUserTextBubble] = useState("");
 	const [growthPoints, refreshGrowthPoints] = useState(0);
 
 	useEffect(() => {
@@ -163,6 +172,7 @@ function Welcome() {
 					setDumbCactus={setDumbCactus}
 				></VoiceInput>
 			</BottomBar>
+			{userTextBubble !== "" ? <UserTextBubble>{userTextBubble}</UserTextBubble>: null}
 		</WelcomeContainer>
 	);
 }

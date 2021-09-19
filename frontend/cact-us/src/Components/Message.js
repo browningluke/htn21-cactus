@@ -4,8 +4,8 @@ import TextLoop from 'react-text-loop';
 
 const MessageBox = styled.div`
 	width: auto;
-	min-width: 250px;
-	height: 80px;
+	min-width: 200px;
+	height: 70px;
 	background-color: #99c0ff;
 	padding: 20px;
 	border-radius: 10px;
