@@ -21,26 +21,31 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 					type: 'audio/wav',
 				});
 				console.log(audiofile);
+                console.log(audiofile.size);
 				const formData = new FormData();
 				formData.append('file', audiofile);
 
 				axios
-					.post('http://localhost:8080/api/speech', formData)
+					.post('http://localhost:8080/api/speech', formData, {withCredentials: true})
 					.then((res) => {
+                        //console.log("test");
 						console.log(res.data);
+                        setUserTextBubble(res.data.text);
+                        refreshGrowthPoints(res.data.score*audiofile.size);
 					})
 					.catch((error) => {
 						console.log(error);
 					});
                 
-                axios
-					.get('http://localhost:8080/api/user', {withCredentials: true})
+                // axios post to update user's current plant's growth points
+                /*axios
+					.post('http://localhost:8080/api/user', {withCredentials: true})
 					.then((res) => {
 						console.log(res.data);
-                        //setUserTextBubble(res.data.text);
+                        
                         refreshGrowthPoints(res.data.user.currentPlant.growth);
 					})
-                
+                */
 				setLoading(false);
 			},
 		});
