@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import seed from '../Assets/Seed.png';
 import Login from '../Assets/Login.png';
@@ -63,6 +64,7 @@ const LoginButton = styled.img`
 `;
 
 function Welcome() {
+	const [display, setDisplay] = useState(false);
 	return (
 		<WelcomeContainer>
 			<SideBarContainer>
@@ -75,9 +77,11 @@ function Welcome() {
 				<Button>
 					<SideButton src={Connect} />
 				</Button>
-				<Button>
-					<SideButton src={Help} />
-				</Button>
+				<SideButton
+					src={Help}
+					onMouseEnter={() => setDisplay(true)}
+					onMouseLeave={() => setDisplay(false)}
+				/>
 			</SideBarContainer>
 			<TitleContainer>
 				<WelcomeTitle>Welcome to Cact-Us!</WelcomeTitle>
@@ -89,6 +93,12 @@ function Welcome() {
 				</a>
 				<VoiceInput></VoiceInput>
 			</BottomBar>
+			{display && (
+				<div>
+					Grow your plant by clicking "Try Me!" and saying positive affirmations
+					like "I am grateful all that I have!"
+				</div>
+			)}
 		</WelcomeContainer>
 	);
 }
