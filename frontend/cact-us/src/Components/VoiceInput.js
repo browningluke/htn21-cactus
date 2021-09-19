@@ -34,15 +34,12 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 					});
                 
                 axios
-					.get('http://localhost:8080/api/user')
+					.get('http://localhost:8080/api/user', {withCredentials: true})
 					.then((res) => {
 						console.log(res.data);
-                        setUserTextBubble(res.data.text);
-                        refreshGrowthPoints(res.data.score);
+                        //setUserTextBubble(res.data.text);
+                        refreshGrowthPoints(res.data.user.currentPlant.growth);
 					})
-					.catch((error) => {
-						setUserLoggedIn(false);
-					});
                 
 				setLoading(false);
 			},

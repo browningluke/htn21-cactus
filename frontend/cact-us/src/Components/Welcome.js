@@ -71,20 +71,21 @@ const LoginButton = styled.img`
 function Welcome() {
 	const [display, setDisplay] = useState(false);
 	const [userLoggedIn, setUserLoggedIn] = useState(false);
+	const [userInfo, setUserInfo] = useState({});
 	const [userTextBubble, setUserTextBubble] = useState(false);
 	const [growthPoints, refreshGrowthPoints] = useState(0);
 
 	useEffect(() => {
-		axios.get('http://localhost:8080/api/user')
+		axios.get('http://localhost:8080/api/user', {withCredentials: true})
 			.then((res) => {
 				console.log(res.data);
-				console.log("api/user request worked");
-				//setUserLoggedIn(true);
+				setUserLoggedIn(true);
+				setUserInfo(res.data.user);
 			})
 			.catch((error) => {
 				console.log(error);
 			});
-	});
+	}, []);
 
 	return (
 		<WelcomeContainer>
@@ -113,8 +114,8 @@ function Welcome() {
 			<Plant />
 			<BottomBar>
 				{!userLoggedIn ? 
-				<a href='http://localhost:8080/auth/discord'> <LoginButton src={Login} /></a> : <Alert variant={'warning'}>Hello</Alert>}
-				
+				<a href='http://localhost:8080/auth/discord'> <LoginButton src={Login} /></a> 
+				: <Alert variant={'warning'}>Hello {userInfo.name}!</Alert>}
 				<VoiceInput 
 					growthPoints={growthPoints} 
 					refreshGrowthPoints={refreshGrowthPoints}
