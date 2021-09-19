@@ -1,9 +1,9 @@
 import { useReactMediaRecorder } from 'react-media-recorder';
 import React, { useState } from 'react';
-import Button from 'react-bootstrap/button';
 import styled from 'styled-components';
 import axios from 'axios';
 import TryMe from '../Assets/TryMe.png';
+import StopRecording from '../Assets/StopRecording.png';
 import TalktoMe from '../Assets/TalktoMe.png';
 
 const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userLoggedIn, setUserLoggedIn, setDumbCactus}) => {
@@ -58,14 +58,13 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 	return (
 		<div>
 			{status === 'recording' ? (
-				<Button
+				<TryButton
                     style={{display: 'inline-block', marginLeft: '50px'}}
-					src={TryMe}
+					src={StopRecording}
 					disabled={isLoading}
 					onClick={!isLoading ? stopRecording : null}
 				>
-					Stop Recording
-				</Button>
+				</TryButton>
 			) : (
 				<TryButton style={{display: 'inline-block', marginLeft: '50px'}} src={hasTried ? TalktoMe : TryMe} onClick={startRecording} />
 			)}

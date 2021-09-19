@@ -3,7 +3,9 @@ import Button from 'react-bootstrap/button';
 const GrowthPoints = ({growthPoints}) => {
 	return (
 		<div>
-			<Button disabled={true}>{growthPoints}</Button>
+			<Button 
+			disabled={true} 
+			>{growthPoints}</Button>
 		</div>
 	);
 };
