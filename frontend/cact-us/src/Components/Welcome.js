@@ -109,7 +109,7 @@ function Welcome() {
 				<GrowthPoints growthPoints={growthPoints}/>
 			</TopBar>
 			<TitleContainer>
-				<WelcomeTitle>Welcome to Cact-Us!</WelcomeTitle>
+				<WelcomeTitle>Welcome to CactUs!</WelcomeTitle>
 			</TitleContainer>
 			<Plant />
 			<BottomBar>

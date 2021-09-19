@@ -28,10 +28,9 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 				axios
 					.post('http://localhost:8080/api/speech', formData, {withCredentials: true})
 					.then((res) => {
-                        //console.log("test");
 						console.log(res.data);
                         setUserTextBubble(res.data.text);
-                        refreshGrowthPoints(res.data.score*audiofile.size);
+                        refreshGrowthPoints(growthPoints+res.data.score*Math.floor(audiofile.size/5000));
 					})
 					.catch((error) => {
 						console.log(error);
@@ -70,7 +69,6 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 			) : (
 				<TryButton src={TryMe} onClick={startRecording} />
 			)}
-			{mediaBlobUrl != null && <audio src={mediaBlobUrl} controls />}
             {!userLoggedIn && <Alert style={{
                 display: "flex",
                 justifyContent: "center",
