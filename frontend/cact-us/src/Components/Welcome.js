@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import seed from '../Assets/Seed.png';
+import Plant from './Plant.js';
 import Login from '../Assets/Login.png';
 import Connect from '../Assets/Connect.png';
 import Help from '../Assets/Help.png';
@@ -39,11 +39,6 @@ const SideButton = styled.img`
 	width: 54px;
 	height: 54px;
 	margin: 10px;
-`;
-
-const Seed = styled.img`
-	width: 132px;
-	height: 137px;
 `;
 
 const BottomBar = styled.div`
@@ -86,7 +81,7 @@ function Welcome() {
 			<TitleContainer>
 				<WelcomeTitle>Welcome to Cact-Us!</WelcomeTitle>
 			</TitleContainer>
-			<Seed src={seed} />
+			<Plant />
 			<BottomBar>
 				<a href='http://localhost:8080/auth/discord'>
 					<LoginButton src={Login} />
