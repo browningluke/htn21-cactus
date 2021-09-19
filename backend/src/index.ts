@@ -12,9 +12,13 @@ import { GenericResponse, GetUser } from "cactus-response";
 import concat from "concat-stream";
 import busboy from "connect-busboy";
 import * as Buffer from "buffer";
+import speech from "@google-cloud/speech";
+import ffmpeg from "fluent-ffmpeg";
+import { Readable } from "stream";
 
 dotenv.config()
 const db = new FirestoreDb();
+const speechClient = new speech.SpeechClient();
 
 passport.serializeUser(function(user, done) {
     // Saving user
@@ -133,7 +137,7 @@ app.patch('/api/user', checkAuth, async (req, res) => {
             growth: reqBody.currentPlant.growth,
         },
         garden: reqBody.garden
-    }
+    };
 
     try {
         await db.updateUser(user.id, newUser);
@@ -144,7 +148,7 @@ app.patch('/api/user', checkAuth, async (req, res) => {
         if (e instanceof Error) {
             const errJson: GenericResponse = {
                 error: e.message
-            }
+            };
             res.status(500).json(errJson);
         }
     }
@@ -155,7 +159,7 @@ app.patch('/api/user', checkAuth, async (req, res) => {
  */
 
 app.post('/api/speech', (req, res) => {
-        let fstream = concat(gotData);
+        let fstream = concat(convert);
         req.pipe(req.busboy);
         req.busboy.on('file', function (fieldname, file, filename) {
             console.log("Uploading: " + filename);
@@ -163,17 +167,43 @@ app.post('/api/speech', (req, res) => {
             file.pipe(fstream);
             fstream.on('close', function () {
                 console.log("Upload Finished of " + filename);
+                res.sendStatus(200);
             });
         });
 
+        function convert(buffer: Buffer) {
+            let goodStream = concat(gotData);
+
+            ffmpeg(Readable.from(buffer))
+                .format('wav')
+                .audioCodec('pcm_s16le')
+                .audioChannels(1)
+                .audioFrequency(16000)
+                .writeToStream(goodStream, { end: true });
+        }
+
         function gotData(buffer: Buffer) {
             let base64data = buffer.toString('base64');
-            console.log(base64data);
-            if (base64data.length > 0) {
-                res.send("Hello. This is example text.");
-            } else {
+            //console.log(base64data);
+
+            speechClient.recognize({
+                config: {
+                    encoding: "LINEAR16",
+                    sampleRateHertz: 16000,
+                    languageCode: 'en-US',
+                },
+                audio: {
+                    content: base64data
+                }
+            }).then(([resp]) => {
+                // @ts-ignore
+                const transcription = resp.results.map(result => result.alternatives[0].transcript).join('\n');
+                console.log('Transcription: ', transcription);
+                res.send(transcription);
+            }).catch((err) => {
+                console.log(err);
                 res.sendStatus(500);
-            }
+            });
         }
     });
 
@@ -187,6 +217,6 @@ function checkAuth(req: any, res: any, next: any) {
 
     const unAuthJson: GenericResponse = {
         error: "Unauthorized. User is not logged in :("
-    }
+    };
     res.status(401).json(unAuthJson);
 }
