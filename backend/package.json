@@ -4,13 +4,16 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "npm run tsc && node dist/index.js",
+    "start:dev": "node dist/index.js",
     "tsc": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/concat-stream": "^1.6.1",
+    "@types/connect-busboy": "^0.0.3",
     "@types/cors": "^2.8.12",
     "@types/dot-object": "^2.1.2",
     "@types/express": "^4.17.13",
@@ -21,6 +24,8 @@
   },
   "dependencies": {
     "@oauth-everything/passport-discord": "^1.0.2",
+    "concat-stream": "^2.0.0",
+    "connect-busboy": "^0.0.2",
     "cors": "^2.8.5",
     "dot-object": "^2.1.4",
     "dotenv": "^10.0.0",

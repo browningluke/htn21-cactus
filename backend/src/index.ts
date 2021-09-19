@@ -9,6 +9,10 @@ import dotenv from 'dotenv';
 import { RecursivePartial, User } from "cactus";
 import { GenericResponse, GetUser } from "cactus-response";
 
+import concat from "concat-stream";
+import busboy from "connect-busboy";
+import * as Buffer from "buffer";
+
 dotenv.config()
 const db = new FirestoreDb();
 
@@ -61,6 +65,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors())
 app.use(express.json());
+app.use(busboy());
 
 /*
     Auth Endpoints
@@ -149,7 +154,28 @@ app.patch('/api/user', checkAuth, async (req, res) => {
     Speech-to-text endpoints
  */
 
-// Nothing as of yet
+app.post('/api/speech', (req, res) => {
+        let fstream = concat(gotData);
+        req.pipe(req.busboy);
+        req.busboy.on('file', function (fieldname, file, filename) {
+            console.log("Uploading: " + filename);
+
+            file.pipe(fstream);
+            fstream.on('close', function () {
+                console.log("Upload Finished of " + filename);
+            });
+        });
+
+        function gotData(buffer: Buffer) {
+            let base64data = buffer.toString('base64');
+            console.log(base64data);
+            if (base64data.length > 0) {
+                res.send("Hello. This is example text.");
+            } else {
+                res.sendStatus(500);
+            }
+        }
+    });
 
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)
