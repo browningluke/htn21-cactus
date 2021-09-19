@@ -68,10 +68,16 @@ passport.use(new Strategy(
 const app = express()
 const port = process.env.PORT ?? 8080;
 
+const corsOptions = {
+    origin: ['http://localhost:8080', 'http://localhost:8081', 'http://localhost:3000'],
+    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+    credentials: true
+}
+
 app.use(session({ secret: "asdfg" }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors())
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(busboy());
 
