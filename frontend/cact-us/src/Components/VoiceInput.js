@@ -1,14 +1,15 @@
 import { useReactMediaRecorder } from 'react-media-recorder';
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/button';
-import Alert from 'react-bootstrap/alert';
 import styled from 'styled-components';
 import axios from 'axios';
 import TryMe from '../Assets/TryMe.png';
+import TalktoMe from '../Assets/TalktoMe.png';
 
 const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userLoggedIn, setUserLoggedIn, setDumbCactus}) => {
 	const [isLoading, setLoading] = useState(false);
-	const { status, startRecording, stopRecording, mediaBlobUrl } =
+    const [hasTried, setHasTried] = useState(false);
+	const { status, startRecording, stopRecording } =
 		useReactMediaRecorder({
 			audio: true,
 			mediaRecorderOptions: {
@@ -16,6 +17,7 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 			},
 			onStop: (blobUrl, blob) => {
 				setLoading(true);
+                setHasTried(true);
 				console.log(blobUrl);
 				const audiofile = new File([blob], 'audiofile.wav', {
 					type: 'audio/wav',
@@ -46,7 +48,8 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 		});
 
 	const TryButton = styled.img`
-		width: 158px;
+        width: auto;
+		min-width: 158px;
 		height: 52px;
 		vertical-align: baseline;
 		cursor: pointer;
@@ -56,6 +59,7 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 		<div>
 			{status === 'recording' ? (
 				<Button
+                    style={{display: 'inline-block', marginLeft: '50px'}}
 					src={TryMe}
 					disabled={isLoading}
 					onClick={!isLoading ? stopRecording : null}
@@ -63,14 +67,8 @@ const VoiceInput = ({growthPoints, refreshGrowthPoints, setUserTextBubble, userL
 					Stop Recording
 				</Button>
 			) : (
-				<TryButton src={TryMe} onClick={startRecording} />
+				<TryButton style={{display: 'inline-block', marginLeft: '50px'}} src={hasTried ? TalktoMe : TryMe} onClick={startRecording} />
 			)}
-            {!userLoggedIn && <Alert style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                position: "fixed"
-            }}variant={'info'}>Please login to Discord to keep track of your dumb cactus' growth!</Alert>}
 		</div>
 	);
 };

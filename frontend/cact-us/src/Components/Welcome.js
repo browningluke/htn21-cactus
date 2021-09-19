@@ -50,6 +50,7 @@ const BottomBar = styled.div`
 	display: flex;
 	flex-direction: row;
 	padding: 20px;
+	margin: 30px 0;
 `;
 
 const TopBar = styled.div`

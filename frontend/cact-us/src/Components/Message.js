@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import TextLoop from 'react-text-loop';
 
 const MessageBox = styled.div`
-	width: 250px;
+	width: auto;
+	min-width: 250px;
 	height: 80px;
 	background-color: #99c0ff;
 	padding: 20px;
-	border-radius: 7px;
+	border-radius: 10px;
 `;
 
 const Message = () => {
