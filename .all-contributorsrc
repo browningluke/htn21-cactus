@@ -1,0 +1,25 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "k-chew",
+      "name": "k-chew",
+      "avatar_url": "https://avatars.githubusercontent.com/u/60660250?v=4",
+      "profile": "https://github.com/k-chew",
+      "contributions": [
+        "code",
+        "design"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "htn21-cactus",
+  "projectOwner": "browningluke",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
