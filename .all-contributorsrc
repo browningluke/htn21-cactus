@@ -24,6 +24,16 @@
         "code",
         "design"
       ]
+    },
+    {
+      "login": "selina-20",
+      "name": "selina-20",
+      "avatar_url": "https://avatars.githubusercontent.com/u/90948575?v=4",
+      "profile": "https://github.com/selina-20",
+      "contributions": [
+        "design",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
