@@ -9,7 +9,7 @@ As students, we may unintentionally compare ourselves to peers and cause a domin
 
 <p align="center">
 	<a href="https://www.youtube.com/watch?v=9f9AvXelATc">
-		<img src="https://img.youtube.com/vi/9f9AvXelATc/maxresdefault.jpg">
+		<img src="https://raw.githubusercontent.com/browningluke/htn21-cactus/main/.github/images/video_thumbnail.png">
 	</a>
 </p>
 
